@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Krash</title>
+        <link rel="stylesheet" href="bigstyle.css">
+    </head>
+    <body style="background-color: #101010;">
+        <div class="header">
+            <div class="inner">
+                <img src="krashlogo.png" class="logo">
+            </div>
+        </div>
+        <div class="bodyx" id="gameboard">
+            <div class="multiplier">
+                <h1 id="multi">0</h1>
+                <h2 id="total">Current bet: <h2 id="totval">0</h2></h2>
+                <h3>Balance: <h3 id="balance">5000</h3></h3>
+            </div>
+            <div class="data">
+                <div class="moneybox">
+                    <input type="text" class="money" id="bet" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" value = 0>
+                </div>
+                <button type="button" id="strt" onclick="startgame()" class="butt">START</button>
+                <button type="button" id="cashout" onclick="cashout()" class="butt2" >CASH OUT</button>
+            </div>
+        </div>
+        <script>
+
+            function startgame() {
+                var startbal = parseFloat(document.getElementById("balance").innerHTML);
+                var bool = 1;
+                var multi = 1.0;
+                var gate = 0;
+                var bet = parseFloat(document.getElementById("bet").value);
+
+                
+                if (startbal == 0) {
+                    alert("No more funds. Refresh to start over");
+                }
+                else if ((bet > startbal) || (bet < 0)) {
+                    alert("Bet Error");
+                }
+                else {
+                document.getElementById("bet").style.display = "none";
+                document.getElementById("gameboard").style.backgroundColor = "green";
+                document.getElementById("strt").style.display = "none";
+                document.getElementById("cashout").style.display = "block";
+                document.getElementById("balance").innerHTML = (startbal - bet).toFixed(2);
+                var interv = setInterval(function() {
+                    multi += 0.01;
+                    document.getElementById("multi").innerHTML = multi.toFixed(2);
+                    document.getElementById("totval").innerHTML = (bet * multi).toFixed(2);
+                    gate = Math.floor(Math.random() * 100 + 1);
+
+                    if ((gate > 90) && (gate <= 92)) {
+                        bool = 0;
+                        var fin = multi.toFixed(2);
+                        document.getElementById("multi").innerHTML = "Crash at " + fin;
+                        document.getElementById("gameboard").style.backgroundColor = "red";
+                        document.getElementById("strt").style.display = "block";
+                        document.getElementById("cashout").style.display = "none";
+                        document.getElementById("bet").style.display = "none";
+                        document.getElementById("bet").style.display = "block";
+                        clearInterval(interv);
+                    }
+                }, 80);
+            }
+                
+            }
+
+            function cashout() {
+                document.getElementById("balance").innerHTML = (parseFloat(document.getElementById("balance").innerHTML) + parseFloat(document.getElementById("totval").innerHTML)).toFixed(2);
+                document.getElementById("cashout").style.display = "none";
+            }
+        </script>
+        
+    </body>
+</html>
